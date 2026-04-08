@@ -1,13 +1,16 @@
 import { Page, expect } from '@playwright/test';
 
 export class DashboardPage {
+    private readonly userDropdown = '.oxd-userdropdown-tab';
+    private readonly pimMenu = 'a[href*="viewPimModule"]';
+
     constructor(private page: Page) { }
 
-    async isVisible() {
-        await expect(this.page).toHaveURL(/dashboard/);
+    async verifyOnDashboard() {
+        await expect(this.page.locator(this.userDropdown)).toBeVisible();
     }
 
-    async logout() {
-        await this.page.click('#logout');
+    async clickPIM() {
+        await this.page.click(this.pimMenu);
     }
 }

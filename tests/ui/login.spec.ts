@@ -1,12 +1,18 @@
-import { test, expect } from '@playwright/test';
-import { LoginPage } from '../../pages/LoginPage';
-import { users } from '../../utils/testData';
+import { test, expect } from '../../fixtures/baseTest';
+import { orangeHRMCredentials } from '../../utils/testData';
 
-test('User can log in successfully', async ({ page }) => {
-    const loginPage = new LoginPage(page);
+test.describe('OrangeHRM Login Tests', () => {
+    test.beforeEach(async ({ loginPage }) => {
+        await loginPage.navigate();
+    });
 
-    await loginPage.navigate();
-    await loginPage.login(users.validUser.username, users.validUser.password);
+    test('Successful login with valid credentials', async ({ loginPage, dashboardPage }) => {
+        await loginPage.login(orangeHRMCredentials.username, orangeHRMCredentials.password);
+        await dashboardPage.verifyOnDashboard();
+    });
 
-    await expect(page).toHaveURL(/dashboard/);
+    test('Failed login with invalid credentials', async ({ loginPage }) => {
+        await loginPage.login('InvalidUser', 'InvalidPassword');
+        await loginPage.verifyInvalidLoginMessage();
+    });
 });
